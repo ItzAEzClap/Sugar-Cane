@@ -1,11 +1,54 @@
+:root {
+    --min: min(1vh, 1vw);
+    --full: calc(100 * var(--min))
+}
+
 body {
+    overflow: hidden;
+    margin: 0;
+}
+
+
+
+#game-container {
+    position: absolute;
+    width: var(--full); 
+    height: var(--full);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+    border: 3px solid black;
+    display: grid;
+}
+
+.tile {
+    overflow: hidden;
+    box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    margin: 0;
+    text-align: center;
+    font-size: fit-content;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    border: 1px solid black;
+}
+
+
+#inputs {
+    width: calc((100% - var(--full)) / 2);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+button {
+    position: absolute;
+    left: calc(var(--full) + 2 * (100% - var(--full)) / 3);
+    top: calc(100vh / 2);
+    width: fit-content;
+    height: fit-content;
 }

@@ -5,10 +5,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Document</title>
+    <link rel="icon" href="favicon.webp">
+    <title>Sugar Cane</title>
 </head>
 <body>
-    <canvas></canvas>
+    <div id="inputs">
+        <h3>Width</h3>
+        <span id="showWidth"></span>
+        <span>
+            1
+            <input type="range" min="1" max="30" id="width">
+            30
+        </span>
+
+        <h3>Height</h3>
+        <span id="showHeight"></span>
+        <span>
+            1
+            <input type="range" min="1" max="30" id="height">
+            30
+        </span>
+    </div>
+    <div id="game-container"></div>
+    <button type="button" onclick="main()">Calculate</button>
+    
     <script src="script.js"></script>
 </body>
 </html>

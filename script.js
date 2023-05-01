@@ -1,21 +1,38 @@
-const canvas = document.querySelector('canvas')
-const c = canvas.getContext('2d')
+const container = document.getElementById('game-container')
+const width = document.getElementById('width')
+const height = document.getElementById('height')
 const WATER = 3
 const ADJACENT = 2
 const ADJACENTADJACENT = 1
-
 const max_depth = 2
-const width = 1
-const height = 10
 
-let min = Math.min(window.innerWidth, window.innerHeight)
+width.value = 5
+height.value = 5
+document.getElementById('showWidth').textContent = width.value
+document.getElementById('showHeight').textContent = height.value
 
-async function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)) }
+let w = width.value
+let h = height.value
+container.style.gridTemplateColumns = `repeat(${w}, 1fr)`
+container.style.gridTemplateRows = `repeat(${h}, 1fr)`
+for (let i = 0; i < w * h; i++) {
+    let div = document.createElement('div')
+    div.className = 'tile'
+    container.appendChild(div)
+}
 
-function init() {
-    min = Math.min(window.innerWidth, window.innerHeight)
-    canvas.width = min
-    canvas.height = min
+function show(grid) {
+    let children = container.childNodes
+    for (let i = 0; i < children.length; i++) {
+        let child = children[i]
+        let y = Math.floor(i / grid.length)
+        let x = i % grid[0].length
+        if (grid[y][x] === 3) {
+            child.style.backgroundColor = 'aqua'
+        } else {
+            child.style.backgroundColor = 'green'
+        }
+    }
 }
 
 function createGrid(w, h) {
@@ -125,14 +142,14 @@ function fixOneLine(grid) {
 }
 
 async function main() {
-    
-    let grid = createGrid(width, height)
+    let w = parseInt(width.value)
+    let h = parseInt(height.value)
+    let grid = createGrid(w, h)
     let solution
     let min = 0
 
-
     let s = performance.now()
-    if (width <= 1 || height <= 1) {
+    if (w <= 1 || h <= 1) {
         solution = fixOneLine(grid)
     } else {
         grid[0][1] = WATER
@@ -152,14 +169,72 @@ async function main() {
                 min = count
             }
         }
+        console.log(solutions)
     }
-
     console.log(performance.now() - s)
-    console.table(solution)
-    console.log(min)
+    show(solution)
     return solution
 }
 
-init()
 
-main()
+
+function resetColor() {
+    for (let child of container.childNodes) {
+        child.style.backgroundColor = 'white'
+    }
+}
+width.addEventListener('input', () => {
+    let children = container.childNodes
+    let w = parseInt(width.value)
+    let h = parseInt(height.value)
+    let oldW = parseInt(document.getElementById('showWidth').textContent)
+    let diff = w - oldW
+
+    if (diff > 0) { // Add
+        for (let i = 0; i < diff * h; i++) {
+            let div = document.createElement('div')
+            div.className = 'tile'
+            container.appendChild(div)
+        }
+    } else { // Remove
+        let removed = 0
+        let cap = oldW + diff - 1
+        for (let i = 0; i < oldW * h; i++) {
+            if ((i % oldW) > cap) {
+                container.removeChild(children[i - removed])
+                removed++
+            }
+            children[i - removed].backgroundColor = 'white'
+        }
+    }
+    document.getElementById('showWidth').textContent = width.value
+    container.style.gridTemplateColumns = `repeat(${width.value}, 1fr)`
+    resetColor()
+})
+height.addEventListener('input', () => {
+    let children = container.childNodes
+    let w = parseInt(width.value)
+    let h = parseInt(height.value)
+    let oldH = parseInt(document.getElementById('showHeight').textContent)
+    let diff = h - oldH
+
+    if (diff > 0) { // Add
+        for (let i = 0; i < diff * w; i++) {
+            let div = document.createElement('div')
+            div.className = 'tile'
+            container.appendChild(div)
+        }
+    } else { // Remove
+        let removed = 0
+        let cap = oldH + diff - 1
+        for (let i = 0; i < oldH * w; i++) {
+            if ((i % oldH) > cap) {
+                container.removeChild(children[i - removed])
+                removed++
+            }
+        }
+    }
+    document.getElementById('showHeight').textContent = height.value
+    container.style.gridTemplateRows = `repeat(${height.value}, 1fr)`
+    resetColor()
+})
