@@ -1,6 +1,8 @@
 const container = document.getElementById('game-container')
 const width = document.getElementById('width')
 const height = document.getElementById('height')
+const showWidth = document.getElementById('showWidth')
+const showHeight = document.getElementById('showHeight')
 const WATER = 3
 const ADJACENT = 2
 const ADJACENTADJACENT = 1
@@ -8,8 +10,8 @@ const max_depth = 2
 
 width.value = 5
 height.value = 5
-document.getElementById('showWidth').textContent = width.value
-document.getElementById('showHeight').textContent = height.value
+showWidth.textContent = width.value
+showHeight.textContent = height.value
 
 let w = width.value
 let h = height.value
@@ -185,7 +187,7 @@ width.addEventListener('input', () => {
     let children = container.childNodes
     let w = parseInt(width.value)
     let h = parseInt(height.value)
-    let oldW = parseInt(document.getElementById('showWidth').textContent)
+    let oldW = parseInt(showWidth.textContent)
     let diff = w - oldW
 
     if (diff > 0) { // Add
@@ -205,7 +207,7 @@ width.addEventListener('input', () => {
             children[i - removed].backgroundColor = 'white'
         }
     }
-    document.getElementById('showWidth').textContent = width.value
+    showWidth.textContent = width.value
     container.style.gridTemplateColumns = `repeat(${width.value}, 1fr)`
     resetColor()
 })
@@ -213,7 +215,7 @@ height.addEventListener('input', () => {
     let children = container.childNodes
     let w = parseInt(width.value)
     let h = parseInt(height.value)
-    let oldH = parseInt(document.getElementById('showHeight').textContent)
+    let oldH = parseInt(showHeight.textContent)
     let diff = h - oldH
 
     if (diff > 0) { // Add
@@ -232,7 +234,7 @@ height.addEventListener('input', () => {
             }
         }
     }
-    document.getElementById('showHeight').textContent = height.value
+    showHeight.textContent = height.value
     container.style.gridTemplateRows = `repeat(${height.value}, 1fr)`
     resetColor()
 })
