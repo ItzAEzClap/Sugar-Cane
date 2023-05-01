@@ -25,9 +25,9 @@ function show(grid) {
     let children = container.childNodes
     for (let i = 0; i < children.length; i++) {
         let child = children[i]
-        let y = Math.floor(i / grid.length)
-        let x = i % grid[0].length
-        if (grid[y][x] === 3) {
+        let y = i % grid.length
+        let x = Math.floor(i / grid.length)
+        if (grid[y][x] === WATER) {
             child.style.backgroundColor = 'aqua'
         } else {
             child.style.backgroundColor = 'green'
@@ -150,7 +150,7 @@ async function main() {
 
     let s = performance.now()
     if (w <= 1 || h <= 1) {
-        solution = fixOneLine(grid)
+        solution = await fixOneLine(grid)
     } else {
         grid[0][1] = WATER
         updateAdjacent(grid, 0, 1, WATER)
@@ -175,8 +175,6 @@ async function main() {
     show(solution)
     return solution
 }
-
-
 
 function resetColor() {
     for (let child of container.childNodes) {
