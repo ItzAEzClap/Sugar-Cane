@@ -8,8 +8,8 @@ const ADJACENT = 2
 const ADJACENTADJACENT = 1
 const max_depth = 2
 
-width.value = 5
-height.value = 5
+width.value = 7
+height.value = 7
 showWidth.textContent = width.value
 showHeight.textContent = height.value
 
@@ -25,16 +25,13 @@ for (let i = 0; i < w * h; i++) {
 
 function show(grid) {
     let children = container.childNodes
-    for (let i = 0; i < children.length; i++) {
-        let child = children[i]
-        let y = i % grid.length
-        let x = Math.floor(i / grid.length)
-        if (grid[y][x] === WATER) {
-            child.style.backgroundColor = 'aqua'
-        } else {
-            child.style.backgroundColor = 'green'
+
+    for (let y = 0; y < grid.length; y++) {
+        for (let x = 0; x < grid[y].length; x++) {
+            children[y * width.value + x].style.backgroundColor = grid[y][x] === WATER ? 'aqua' : 'green'
         }
     }
+
 }
 
 function createGrid(w, h) {
@@ -89,6 +86,8 @@ async function solve(grid, depth) {
     let grids = []
 
     while (grid.some(row => row.some(val => val === 0 || val === 1))) {
+        show(grid)
+        await new Promise(resolve => setTimeout(resolve, 100))
 
         let changed = false
         for (let y = 0; y < grid.length; y++) {
@@ -103,8 +102,9 @@ async function solve(grid, depth) {
                     let t = structuredClone(grid)
                     t[y][x] = WATER
                     updateAdjacent(t, y, x, WATER)
-                    
-                    solve(t, depth + 1).then(res => res.forEach(g => grids.push(g)))
+                    let res = await solve(t, depth + 1)
+                    res.forEach(g => grids.push(g))
+                    //res = solve(t, depth + 1).then(res => res.forEach(g => grids.push(g)))
                 }
             }
         }
@@ -154,8 +154,16 @@ async function main() {
     if (w <= 1 || h <= 1) {
         solution = await fixOneLine(grid)
     } else {
-        grid[0][1] = WATER
-        updateAdjacent(grid, 0, 1, WATER)
+        if (w >= 5 && h >= 5) {
+            for (let [y, x] of [[0, 2], [1, 0], [2, 3], [3, 1], [0, 4]]) {
+                grid[y][x] = WATER
+                updateAdjacent(grid, y, x, WATER)
+            }
+        } else {
+            grid[0][1] = WATER
+            updateAdjacent(grid, 0, 1, WATER)
+        }
+
         let solutions = await solve(grid, 0)
         // Sort By Amount Of Water
         min = Number.POSITIVE_INFINITY
@@ -166,6 +174,8 @@ async function main() {
                     if (solutions[i][y][x] === WATER) { count++ }
                 }
             }
+            show(solutions[i])
+            
             if (count < min) {
                 solution = solutions[i]
                 min = count
@@ -174,6 +184,7 @@ async function main() {
         console.log(solutions)
     }
     console.log(performance.now() - s)
+    console.log(min)
     show(solution)
     return solution
 }
